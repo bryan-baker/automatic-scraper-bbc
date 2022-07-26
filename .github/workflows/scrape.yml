@@ -1,27 +1,32 @@
-# Call this whatever
+# Call this whatever you want
 name: scrape
 
-# When does it run?
+# When does it get run?
 on:
-
-# I can click a button and forcd it to run
+  # workflow_dispatch means "I can click a button and force it to run"
   workflow_dispatch:
+  # schedule/cron means "on a set schedule"
   schedule:
     - cron: '*/5 * * * *'
 jobs:
   scrape:
+    # For some reason, we run love versions of linux
     runs-on: ubuntu-latest
     steps:
-    # Download all code from repo
+      # Download all of the code from your repo
       - name: Check out this repo
         uses: actions/checkout@v2
+      # Set up Python 3.9
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.9'
-      # make sure filename matches the filename here
+      - name: Install necessary Python packages
+        run: pip install pandas beautifulsoup4 requests
+      # MAKE SURE YOUR SCRAPER FILENAME MATCHES THE FILENAME HERE!!
       - name: Run the scraping script
         run: python scraper.py
+      # I just stole the rest of this code so don't ask me questions about it
       - name: Commit and push if content changed
         run: |-
           git config user.name "Automated"
